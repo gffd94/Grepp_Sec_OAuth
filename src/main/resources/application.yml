@@ -1,0 +1,28 @@
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/grepp_oauth
+    username: happy
+    password: day
+
+
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+    hibernate:
+      ddl-auto: create
+
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 146433177283-rld7ktt959j0fd43n4hmj8h5l0anp003.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+              - email
+              - profile
