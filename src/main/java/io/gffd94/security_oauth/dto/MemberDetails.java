@@ -14,11 +14,12 @@ import java.util.Map;
 
 // 커스텀한 OAuth2User로 사용자가 입력한 데이터를 기반으로 security에 넘겨주는 역할
 @Getter
-@Accessors(chain = true) // setter가 void -> chain ( chain은 return을 this로 해주기 때문에 가능 )
+@Accessors(chain = true) // setter 메서드의 반환값을 void 대신 현재 객체(this)
 public class MemberDetails implements OAuth2User {
 
     private String name;
     private String email;
+    // OAuth2 로그인 시 사용자 정보를 Map<String, Object> 형태로 넘겨주고 attributes저장해서  attributes.get으로 쓰려고
     private Map<String, Object> attributes;
 
     @Setter

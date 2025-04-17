@@ -40,32 +40,11 @@ public class MemberService extends DefaultOAuth2UserService {
 
         String provider = userRequest.getClientRegistration().getRegistrationId().toUpperCase();
         MemberDetails memberDetails = MemberDetailsFactory.memberDetails(provider, oAuth2User);
-//        Map<String, Object> attributes = oAuth2User.getAttributes();
-//        String findName = attributes.get("name").toString();
-//
-//        //DB에서 가입된 회원인지 확인이 필요!
-//        String email = attributes.get("email").toString();
+
+        //DB에서 가입된 회원인지 확인이 필요!(기준 - 이메일)
         Optional<Member> memberOptional = memberRepository.findByEmail(memberDetails.getEmail());
 
         // DB에 회원 정보가 없다면 회원가입을 시킨다.
-//        if(memberOptional.isEmpty()) {
-//            Member member = Member.builder()
-//                    .name(findName)
-//                    .nickname(findName)
-//                    .email(email)
-//                    .provider(provider)
-//                    .build();
-//            memberRepository.save(member);
-//
-//        }
-//
-//        MemberDetails memberDetails = MemberDetails.builder()
-//                .name(findName)
-//                .attributes(attributes)
-//                .build();
-//
-//        memberDetails.setRole();
-
         Member findMember = memberOptional.orElseGet(
                 () -> {
                     Member saved = Member.builder()
