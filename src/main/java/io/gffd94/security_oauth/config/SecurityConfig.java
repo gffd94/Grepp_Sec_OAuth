@@ -21,6 +21,7 @@ public class SecurityConfig {
                     auth.requestMatchers("/login", "/sing-up")
                             .anonymous()
                             .requestMatchers("/user/**")
+                            //hasAnyAuthority : requestMathcer인 접근자가 해당 권한만 갖고 있는 사람만 접근 가능하다고 권한에 대한 범위설정.
                             .hasAnyAuthority("USER", "ADMIN")
                             .requestMatchers("/admin/**")
                             .hasAnyAuthority("ADMIN")

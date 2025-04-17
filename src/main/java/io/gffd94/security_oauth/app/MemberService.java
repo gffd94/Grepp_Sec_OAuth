@@ -33,18 +33,19 @@ public class MemberService extends DefaultOAuth2UserService {
             registration: 
             여기에 해당하는 정보가 담겨있다
         * */
-        String provider = userRequest.getClientRegistration().getRegistrationId();
 
         // 로그인한 사람의 정보
         OAuth2User oAuth2User = super.loadUser(userRequest);
         log.info("oAuth2User = {}", oAuth2User);
-        Map<String, Object> attributes = oAuth2User.getAttributes();
-        String findName = attributes.get("name").toString();
 
-
-        //DB에서 가입된 회원인지 확인이 필요!
-        String email = attributes.get("email").toString();
-        Optional<Member> memberOptional = memberRepository.findByEmail(email);
+        String provider = userRequest.getClientRegistration().getRegistrationId().toUpperCase();
+        MemberDetails memberDetails = MemberDetailsFactory.memberDetails(provider, oAuth2User);
+//        Map<String, Object> attributes = oAuth2User.getAttributes();
+//        String findName = attributes.get("name").toString();
+//
+//        //DB에서 가입된 회원인지 확인이 필요!
+//        String email = attributes.get("email").toString();
+        Optional<Member> memberOptional = memberRepository.findByEmail(memberDetails.getEmail());
 
         // DB에 회원 정보가 없다면 회원가입을 시킨다.
 //        if(memberOptional.isEmpty()) {
@@ -65,27 +66,24 @@ public class MemberService extends DefaultOAuth2UserService {
 //
 //        memberDetails.setRole();
 
-
-
-        Member member = memberOptional.orElseGet(
+        Member findMember = memberOptional.orElseGet(
                 () -> {
                     Member saved = Member.builder()
-                            .name(findName)
-                            .email(email)
+                            .name(memberDetails.getName())
+                            .email(memberDetails.getEmail())
                             .provider(provider)
                             .build();
 
                     return memberRepository.save(saved);
                 });
 
-        MemberDetails memberDetails = MemberDetails.builder()
-                .name(member.getName())
-                .attributes(attributes)
-                .build();
 
-        memberDetails.setRole(member.getRole());
+        if(findMember.getProvider().equals(provider)){
+            return memberDetails.setRole(findMember.getRole());
+        }else {
+            throw new RuntimeException();
+        }
 
-        return memberDetails;
 
     }
 }
