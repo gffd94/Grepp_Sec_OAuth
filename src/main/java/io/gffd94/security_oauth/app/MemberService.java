@@ -35,9 +35,12 @@ public class MemberService extends DefaultOAuth2UserService {
         * */
 
         // 로그인한 사람의 정보
-        OAuth2User oAuth2User = super.loadUser(userRequest);
-        log.info("oAuth2User = {}", oAuth2User);
+        log.info("userRequest = {}", userRequest.getClientRegistration());
+        log.info("userRequest = {}", userRequest.getAccessToken());
 
+        OAuth2User oAuth2User = super.loadUser(userRequest);
+        log.info("oAuth2User = {}", oAuth2User.getAttributes());
+        // google, kakao, naver
         String provider = userRequest.getClientRegistration().getRegistrationId().toUpperCase();
         MemberDetails memberDetails = MemberDetailsFactory.memberDetails(provider, oAuth2User);
 
@@ -56,7 +59,7 @@ public class MemberService extends DefaultOAuth2UserService {
                     return memberRepository.save(saved);
                 });
 
-
+        // DB에 있는 provider와 userRequest에서 받은 provider가 동일한지 확인
         if(findMember.getProvider().equals(provider)){
             return memberDetails.setRole(findMember.getRole());
         }else {
